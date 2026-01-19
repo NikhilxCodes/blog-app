@@ -1,6 +1,7 @@
 import { useBlogs } from '../hooks/useBlogs';
 import { BlogCard } from './BlogCard';
 import { Card } from './ui/card';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BlogListProps {
   selectedBlogId: number | null;
@@ -41,15 +42,22 @@ export const BlogList = ({ selectedBlogId, onSelectBlog }: BlogListProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      {blogs.map((blog) => (
-        <BlogCard
-          key={blog.id}
-          blog={blog}
-          onClick={() => onSelectBlog(blog.id)}
-          isSelected={selectedBlogId === blog.id}
-        />
-      ))}
-    </div>
+    <motion.div
+      className="space-y-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ staggerChildren: 0.1 }}
+    >
+      <AnimatePresence>
+        {blogs.map((blog) => (
+          <BlogCard
+            key={blog.id}
+            blog={blog}
+            onClick={() => onSelectBlog(blog.id)}
+            isSelected={selectedBlogId === blog.id}
+          />
+        ))}
+      </AnimatePresence>
+    </motion.div>
   );
 };
