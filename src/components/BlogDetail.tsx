@@ -5,6 +5,17 @@ import { Button } from './ui/button';
 import { motion } from 'framer-motion';
 import { Trash2, Calendar } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface BlogDetailProps {
   blogId: string | null;
@@ -60,13 +71,11 @@ export const BlogDetail = ({ blogId, onDeleteSuccess }: BlogDetailProps) => {
   const isAuthor = user?.id === blog.author?.id;
 
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this blog?')) {
-      deleteBlog.mutate(blog.id, {
-        onSuccess: () => {
-          if (onDeleteSuccess) onDeleteSuccess();
-        }
-      });
-    }
+    deleteBlog.mutate(blog.id, {
+      onSuccess: () => {
+        if (onDeleteSuccess) onDeleteSuccess();
+      }
+    });
   };
 
   return (
@@ -116,15 +125,33 @@ export const BlogDetail = ({ blogId, onDeleteSuccess }: BlogDetailProps) => {
               </div>
 
               {isAuthor && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={handleDelete}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your article
+                        "{blog.title}" and remove it from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+                        Delete Article
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
           </div>

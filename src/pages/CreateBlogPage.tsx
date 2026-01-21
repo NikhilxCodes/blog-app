@@ -3,15 +3,15 @@ import { CreateBlogForm } from '@/components/CreateBlogForm';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
+import type { Blog } from '@/types/blog';
+
 export default function CreateBlogPage() {
     const navigate = useNavigate();
 
-    const handleCreateSuccess = (newBlog: any) => {
+    const handleCreateSuccess = (newBlog: Blog) => {
         // Redirect to home and select the new blog via query param
-        // Ensure we handle the ID correctly (converting to string implies it might be number)
-        const id = newBlog?.id || newBlog?.data?.id; // handling potential response wrappers
-        if (id) {
-            navigate(`/?blogId=${id}`);
+        if (newBlog.id) {
+            navigate(`/?blogId=${newBlog.id}`);
         } else {
             navigate('/'); // Fallback if no ID
         }

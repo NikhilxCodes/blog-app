@@ -6,8 +6,10 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 
+import type { Blog } from '../types/blog';
+
 interface CreateBlogFormProps {
-  onSuccess?: (newBlog: any) => void;
+  onSuccess?: (newBlog: Blog) => void;
 }
 
 export const CreateBlogForm = ({ onSuccess }: CreateBlogFormProps) => {
