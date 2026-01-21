@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { useCreateBlog } from '../hooks/useBlogs';
+import { useAuth } from '../context/AuthContext';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 
-export const CreateBlogForm = () => {
+interface CreateBlogFormProps {
+  onSuccess?: (newBlog: any) => void;
+}
+
+export const CreateBlogForm = ({ onSuccess }: CreateBlogFormProps) => {
+  const { user } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [content, setContent] = useState('');
@@ -16,6 +22,8 @@ export const CreateBlogForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) return; // Should be protected by route, but safety check
 
     const categoryArray = categories
       .split(',')
@@ -34,14 +42,19 @@ export const CreateBlogForm = () => {
         coverImage,
         category: categoryArray,
         date: new Date().toISOString(),
+        author: user, // Use logged in user
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           setTitle('');
           setDescription('');
           setContent('');
           setCoverImage('');
           setCategories('');
+
+          if (onSuccess) {
+            onSuccess(data);
+          }
         },
       }
     );

@@ -4,8 +4,8 @@ import { Card } from './ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BlogListProps {
-  selectedBlogId: number | null;
-  onSelectBlog: (id: number) => void;
+  selectedBlogId: string | null;
+  onSelectBlog: (id: string) => void;
 }
 
 export const BlogList = ({ selectedBlogId, onSelectBlog }: BlogListProps) => {

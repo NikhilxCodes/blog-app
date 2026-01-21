@@ -1,10 +1,12 @@
-import { Blog, CreateBlogRequest } from '../types/blog';
+import type { Blog, CreateBlogRequest } from '../types/blog';
 
 const API_BASE_URL = 'http://localhost:3001';
 
-const normalizeBlog = (blog: any): Blog => ({
+type BlogAPIResponse = Omit<Blog, 'id'> & { id: string | number };
+
+const normalizeBlog = (blog: BlogAPIResponse): Blog => ({
   ...blog,
-  id: typeof blog.id === 'string' ? parseInt(blog.id, 10) : blog.id,
+  id: String(blog.id),
 });
 
 export const blogsApi = {
@@ -17,7 +19,7 @@ export const blogsApi = {
     return data.map(normalizeBlog);
   },
 
-  getById: async (id: number): Promise<Blog> => {
+  getById: async (id: string): Promise<Blog> => {
     const response = await fetch(`${API_BASE_URL}/blogs/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch blog with id ${id}`);
@@ -39,5 +41,14 @@ export const blogsApi = {
     }
     const data = await response.json();
     return normalizeBlog(data);
+  },
+
+  delete: async (id: string): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/blogs/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete blog');
+    }
   },
 };
